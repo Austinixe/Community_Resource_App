@@ -7,7 +7,15 @@ const jwt = require('jsonwebtoken');
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, organization, phone } = req.body;
+
+    // Validate role
+    if (role && !['donor', 'beneficiary', 'both'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid role. Must be donor, beneficiary, or both'
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -26,12 +34,15 @@ exports.register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role: role || 'beneficiary',
+      organization: organization || '',
+      phone: phone || ''
     });
 
     // Create JWT token
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -43,7 +54,10 @@ exports.register = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role,
+        organization: user.organization,
+        phone: user.phone
       }
     });
 
@@ -84,7 +98,7 @@ exports.login = async (req, res) => {
 
     // Create JWT token
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -96,7 +110,10 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role,
+        organization: user.organization,
+        phone: user.phone
       }
     });
 

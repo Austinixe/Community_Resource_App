@@ -8,7 +8,10 @@ const Register = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'beneficiary',
+    organization: '',
+    phone: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,7 +43,14 @@ const Register = () => {
 
     setLoading(true);
 
-    const result = await register(formData.name, formData.email, formData.password);
+    const result = await register(
+      formData.name, 
+      formData.email, 
+      formData.password,
+      formData.role,
+      formData.organization,
+      formData.phone
+    );
 
     if (result.success) {
       navigate('/');
@@ -54,13 +64,30 @@ const Register = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Create an Account</h2>
-        <p className="auth-subtitle">Join our community and start sharing resources!</p>
+        <p className="auth-subtitle">Join our community!</p>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
+          {/* Role Selection */}
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="role">I am a *</label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+              className="role-select"
+            >
+              <option value="beneficiary">🙋 Beneficiary - Looking for resources</option>
+              <option value="donor">🤝 Donor/Organization - Providing resources</option>
+              <option value="both">👥 Both</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="name">Full Name *</label>
             <input
               type="text"
               id="name"
@@ -73,7 +100,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email *</label>
             <input
               type="email"
               id="email"
@@ -85,8 +112,35 @@ const Register = () => {
             />
           </div>
 
+          {/* Show organization field for donors */}
+          {(formData.role === 'donor' || formData.role === 'both') && (
+            <div className="form-group">
+              <label htmlFor="organization">Organization Name</label>
+              <input
+                type="text"
+                id="organization"
+                name="organization"
+                value={formData.organization}
+                onChange={handleChange}
+                placeholder="Enter organization name (optional)"
+              />
+            </div>
+          )}
+
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="phone">Phone Number</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Enter phone number (optional)"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password *</label>
             <input
               type="password"
               id="password"
@@ -99,7 +153,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">Confirm Password *</label>
             <input
               type="password"
               id="confirmPassword"

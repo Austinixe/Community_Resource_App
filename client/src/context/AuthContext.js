@@ -21,28 +21,34 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Register function
-  const register = async (name, email, password) => {
-    try {
-      const response = await authAPI.register({ name, email, password });
-      const { token, user } = response.data;
+const register = async (name, email, password, role, organization, phone) => {
+  try {
+    const response = await authAPI.register({ 
+      name, 
+      email, 
+      password, 
+      role, 
+      organization, 
+      phone 
+    });
+    const { token, user } = response.data;
 
       // Save to localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+     localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
 
       // Update state
       setToken(token);
-      setUser(user);
+    setUser(user);
 
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Registration failed'
-      };
-    }
-  };
-
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Registration failed'
+    };
+  }
+};
   // Login function
   const login = async (email, password) => {
     try {

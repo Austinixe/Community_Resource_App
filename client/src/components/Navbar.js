@@ -26,18 +26,26 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <>
-              <li className="navbar-item">
-                <Link to="/create-resource" className="navbar-link">
-                  Add Resource
-                </Link>
-              </li>
+             {(user?.role === 'donor' || user?.role === 'both') && (
+  <li className="navbar-item">
+    <Link to="/create-resource" className="navbar-link">
+      Add Resource
+    </Link>
+  </li>
+)}
               <li className="navbar-item">
                 <Link to="/my-resources" className="navbar-link">
                   My Resources
                 </Link>
               </li>
               <li className="navbar-item">
-                <span className="navbar-user">👋 {user?.name}</span>
+                <span className="navbar-user">
+                  {user?.role === 'donor' && '🤝'}
+                  {user?.role === 'beneficiary' && '🙋'}
+                  {user?.role === 'both' && '👥'}
+                  {' '}{user?.name}
+                  {user?.organization && ` (${user.organization})`}
+                </span>
               </li>
               <li className="navbar-item">
                 <button onClick={handleLogout} className="navbar-button">
