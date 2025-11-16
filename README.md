@@ -153,7 +153,8 @@ JWT_SECRET=your_super_secret_jwt_key
 npm run dev
 ```
 
-Backend will run on `http://localhost:5000`
+Backend will run on `https://resource-board-backend.onrender.com` for deployed environment.
+
 
 ### 3. Frontend Setup
 
