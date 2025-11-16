@@ -9,17 +9,21 @@ const MyResources = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    } else {
-      fetchMyResources();
-    }
-  }, [isAuthenticated, navigate]);
+ // Redirect if not authenticated or not authorized
+useEffect(() => {
+  if (!isAuthenticated) {
+    navigate('/login');
+  } else if (user?.role === 'beneficiary') {
+    alert('Only donors can manage resources');
+    navigate('/');
+  } else {
+    fetchMyResources();
+  }
+}, [isAuthenticated, user, navigate]);
 
   const fetchMyResources = async () => {
     try {

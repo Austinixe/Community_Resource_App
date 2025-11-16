@@ -16,17 +16,21 @@ const CreateResource = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { isAuthenticated } = useAuth();
+ const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const categories = ['Food Bank', 'Education', 'Healthcare', 'Events', 'Job Opportunities', 'Housing', 'Other'];
 
   // Redirect if not authenticated
-  React.useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
+  // Redirect if not authenticated or not authorized
+React.useEffect(() => {
+  if (!isAuthenticated) {
+    navigate('/login');
+  } else if (user?.role === 'beneficiary') {
+    alert('Only donors can create resources');
+    navigate('/');
+  }
+}, [isAuthenticated, user, navigate]);
 
   const handleChange = (e) => {
     setFormData({
