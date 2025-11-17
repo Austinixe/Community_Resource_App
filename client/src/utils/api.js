@@ -1,8 +1,8 @@
 import axios from 'axios';
 
+
 // Base URL for API
-// Base URL for API
-const API_URL = `${import.meta.env.VITE_API_URL}/api`;
+const API_URL = process.env.REACT_APP_API_URL || 'https://resource-board-backend.onrender.com/api';
 
 
 // Create axios instance
